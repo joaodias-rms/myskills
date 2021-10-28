@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 
-import {View, Text, TextInput, FlatList} from 'react-native';
+import {View, Text, TextInput, FlatList, Alert} from 'react-native';
 
 import {Button} from '../../Components/Button';
 import {SkillCard} from '../../Components/SkillCard';
 
 import {styles} from './styles';
 
-interface SkillData {
+export interface SkillData {
   id: string;
   name: string;
 }
@@ -22,8 +22,16 @@ export function Home() {
       id: String(new Date().getTime()),
       name: newSkill,
     };
-    //oldState vai receber o estado anterior e adicionar o novo, utiliza-se o spread operator (...) pra receber as informações que estão dentro do estado
-    setMySkills(oldState => [...oldState, data]);
+    if (newSkill.length === 0) {
+      Alert.alert('The field is empty', 'Insert a skill');
+    } else {
+      //oldState vai receber o estado anterior e adicionar o novo, utiliza-se o spread operator (...) pra receber as informações que estão dentro do estado
+      setMySkills(oldState => [...oldState, data]);
+    }
+  }
+
+  function handleRemoveSkill(id: string) {
+    setMySkills(oldState => oldState.filter(skill => skill.id !== id));
   }
 
   useEffect(() => {
@@ -48,14 +56,21 @@ export function Home() {
         placeholderTextColor="#555"
         onChangeText={setNewSkill}
       />
-      <Button onPress={handleAddNewSkill} />
+      <Button onPress={handleAddNewSkill} title="Add" />
 
       <Text style={[styles.title, {marginVertical: 50}]}>My Skills</Text>
 
       <FlatList
         data={mySkills}
         keyExtractor={item => item.id}
-        renderItem={({item}) => <SkillCard skill={item.name} />}
+        renderItem={({item}) => (
+          <SkillCard
+            skill={item.name}
+            onPress={() => {
+              handleRemoveSkill(item.id);
+            }}
+          />
+        )}
       />
     </View>
   );

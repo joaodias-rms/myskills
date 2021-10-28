@@ -9,13 +9,15 @@ import {
 
 import {styles} from './styles';
 
-type ButtonProps = TouchableOpacityProps;
+type ButtonProps = TouchableOpacityProps &{
+  title: string
+}
 
-export function Button({...rest}: ButtonProps) {
+export function Button({title,...rest}: ButtonProps) {
   return (
     <View>
       <TouchableOpacity style={styles.button} activeOpacity={0.7} {...rest}>
-        <Text style={styles.buttonText}>Add</Text>
+        <Text style={styles.buttonText}>{title}</Text>
       </TouchableOpacity>
     </View>
   );
